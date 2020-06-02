@@ -77,20 +77,20 @@ class SearchStoreDataSource: NSObject, UITableViewDataSource, UITableViewDelegat
     }
 
     static func dataSource(with downloader: StoreProjectDownloaderProtocol = StoreProjectDownloader()) -> SearchStoreDataSource {
-        return SearchStoreDataSource(with: downloader)
+        SearchStoreDataSource(with: downloader)
     }
 
     func numberOfRows(in tableView: UITableView) -> Int {
-        return projects.count
+        projects.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return projects.count
+        projects.count
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableUtil.heightForImageCell()
+        TableUtil.heightForImageCell()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -135,7 +135,7 @@ class SearchStoreDataSource: NSObject, UITableViewDataSource, UITableViewDelegat
         self.delegate?.showLoadingIndicator()
 
         guard let cellProject = cell?.project else { return }
-        self.downloader.fetchProjectDetails(for: cellProject) { project, error in
+        self.downloader.fetchProjectDetails(for: cellProject.projectId) { project, error in
             guard timer.isValid else { return }
             guard let StoreProject = project, error == nil else { return }
             guard let cell = cell else { return }

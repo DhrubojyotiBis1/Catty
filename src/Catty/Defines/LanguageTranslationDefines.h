@@ -155,6 +155,14 @@
 #define kLocalizedDeleteTheseScripts NSLocalizedString(@"Delete these scripts?", nil)
 #define kLocalizedAnimateBrick NSLocalizedString(@"Animate brick-parts", nil)
 #define kLocalizedCopyBrick NSLocalizedString(@"Copy brick", nil)
+#define kLocalizedDisableBrick NSLocalizedString(@"Disable brick", nil)
+#define kLocalizedEnableBrick NSLocalizedString(@"Enable brick", nil)
+#define kLocalizedDisableScript NSLocalizedString(@"Disable script", nil)
+#define kLocalizedEnableScript NSLocalizedString(@"Enable script", nil)
+#define kLocalizedDisableLoop NSLocalizedString(@"Disable loop", nil)
+#define kLocalizedEnableLoop NSLocalizedString(@"Enable loop", nil)
+#define kLocalizedDisableCondition NSLocalizedString(@"Disable condition", nil)
+#define kLocalizedEnableCondition NSLocalizedString(@"Enable condition", nil)
 #define kLocalizedEditFormula NSLocalizedString(@"Edit formula", nil)
 #define kLocalizedMoveBrick NSLocalizedString(@"Move brick", nil)
 #define kLocalizedDeleteSounds NSLocalizedString(@"Delete sounds", nil)
@@ -249,6 +257,7 @@
 #define kLocalizedCameraBack NSLocalizedString(@"back", nil)
 #define kLocalizedCameraFront NSLocalizedString(@"front", nil)
 #define kLocalizedMoreInformation NSLocalizedString(@"More information", nil)
+#define kLocalizedScene NSLocalizedString(@"Scene", nil)
 
 //************************************************************************************************************
 //**********************************       SHORT DESCRIPTIONS      *******************************************
@@ -570,6 +579,7 @@
 #define kUIFEProjectLists NSLocalizedString(@"Project lists:", nil)
 #define kUIFEObjectLists NSLocalizedString(@"Object lists:", nil)
 #define kUIFEDeleteVarBeingUsed NSLocalizedString(@"This variable can not be deleted because it is still in use.", nil)
+#define kUIFEDeleteListBeingUsed NSLocalizedString(@"This list can not be deleted because it is still in use.", nil)
 #define kUIFEActionVar NSLocalizedString(@"Variable type", nil)
 #define kUIFEActionList NSLocalizedString(@"List type", nil)
 #define kUIFEActionVarObj NSLocalizedString(@"for this actor or object", nil)

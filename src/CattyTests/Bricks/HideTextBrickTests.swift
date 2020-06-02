@@ -72,4 +72,15 @@ final class HideTextBrickTests: XCTestCase {
         XCTAssertTrue(true); // The purpose of this test is to show that the program does not crash
         // when no UserVariable is selected in the IDE and the brick is executed
     }
+
+    func testMutableCopy() {
+        let brick = HideTextBrick()
+        let userVariable = UserVariable(name: "testName")
+        brick.userVariable = userVariable
+
+        let copiedBrick: HideTextBrick = brick.mutableCopy(with: CBMutableCopyContext(), andErrorReporting: true) as! HideTextBrick
+
+        XCTAssertTrue(brick.isEqual(to: copiedBrick))
+        XCTAssertFalse(brick === copiedBrick)
+    }
 }

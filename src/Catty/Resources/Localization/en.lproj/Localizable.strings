@@ -428,6 +428,18 @@
 "direction" = "direction";
 
 /* No comment provided by engineer. */
+"Disable brick" = "Disable brick";
+
+/* No comment provided by engineer. */
+"Disable condition" = "Disable condition";
+
+/* No comment provided by engineer. */
+"Disable loop" = "Disable loop";
+
+/* No comment provided by engineer. */
+"Disable script" = "Disable script";
+
+/* No comment provided by engineer. */
 "Disagree" = "Disagree";
 
 /* No comment provided by engineer. */
@@ -513,6 +525,18 @@
 
 /* No comment provided by engineer. */
 "Empty input!" = "Empty input!";
+
+/* No comment provided by engineer. */
+"Enable brick" = "Enable brick";
+
+/* No comment provided by engineer. */
+"Enable condition" = "Enable condition";
+
+/* No comment provided by engineer. */
+"Enable loop" = "Enable loop";
+
+/* No comment provided by engineer. */
+"Enable script" = "Enable script";
 
 /* No comment provided by engineer. */
 "End if" = "End if";
@@ -1313,6 +1337,9 @@
 "Say" = "Say";
 
 /* No comment provided by engineer. */
+"Scene" = "Scene";
+
+/* No comment provided by engineer. */
 "Script" = "Script";
 
 /* No comment provided by engineer. */
@@ -1566,6 +1593,9 @@
 
 /* No comment provided by engineer. */
 "This feature is coming soon!" = "This feature is coming soon!";
+
+/* No comment provided by engineer. */
+"This list can not be deleted because it is still in use." = "This list can not be deleted because it is still in use.";
 
 /* No comment provided by engineer. */
 "This variable can not be deleted because it is still in use." = "This variable can not be deleted because it is still in use.";

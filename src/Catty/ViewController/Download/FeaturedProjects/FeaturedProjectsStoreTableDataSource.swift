@@ -45,7 +45,7 @@ class FeaturedProjectsStoreTableDataSource: NSObject, UITableViewDataSource, UIT
     }
 
     static func dataSource(with downloader: StoreProjectDownloaderProtocol = StoreProjectDownloader()) -> FeaturedProjectsStoreTableDataSource {
-        return FeaturedProjectsStoreTableDataSource(with: downloader)
+        FeaturedProjectsStoreTableDataSource(with: downloader)
     }
 
     // MARK: - DataSource
@@ -60,11 +60,11 @@ class FeaturedProjectsStoreTableDataSource: NSObject, UITableViewDataSource, UIT
     }
 
     func numberOfRows(in tableView: UITableView) -> Int {
-        return self.projects.count
+        self.projects.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.projects.count
+        self.projects.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -82,7 +82,7 @@ class FeaturedProjectsStoreTableDataSource: NSObject, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell: FeaturedProjectsCell? = tableView.cellForRow(at: indexPath) as? FeaturedProjectsCell
 
-        self.downloader.fetchProjectDetails(for: (cell?.project)!) { project, error in
+        self.downloader.fetchProjectDetails(for: (cell?.project)!.projectId) { project, error in
             guard let StoreProject = project, error == nil else { return }
             cell?.project = StoreProject
             self.delegate?.selectedCell(dataSource: self, didSelectCellWith: cell!)

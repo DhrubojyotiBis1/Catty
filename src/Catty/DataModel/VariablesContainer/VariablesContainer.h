@@ -26,6 +26,7 @@
 @class SpriteObject;
 @class UserVariable;
 @class OrderedMapTable;
+@protocol UserDataProtocol;
 
 @interface VariablesContainer : NSObject
 
@@ -65,8 +66,6 @@
 - (NSMutableArray*)allVariables;
 // Array of Lists
 - (NSMutableArray*)allLists;
-// Array of Variables and Lists
-- (NSMutableArray*)allVariablesAndLists;
 
 // Array of UserVariable
 - (NSArray*)objectVariablesForObject:(SpriteObject*)spriteObject;
@@ -75,11 +74,8 @@
 - (BOOL)addObjectVariable:(UserVariable*)userVariable forObject:(SpriteObject*)spriteObject;
 - (BOOL)addObjectList:(UserVariable*)userList forObject:(SpriteObject*)spriteObject;
 
-- (SpriteObject*)spriteObjectForObjectVariable:(UserVariable*)userVariable;
-
-- (BOOL)isVariableOfSpriteObject:(SpriteObject*)spriteObject userVariable:(UserVariable*)userVariable;
-
-- (BOOL)isProjectVariableOrList:(UserVariable*)userVariable;
+- (BOOL)isProjectList: (id<UserDataProtocol>)userList;
+- (BOOL)isProjectVariable: (UserVariable*)userVariable;
 
 - (void)removeObjectVariablesForSpriteObject:(SpriteObject*)object;
 - (void)removeObjectListsForSpriteObject:(SpriteObject*)object;

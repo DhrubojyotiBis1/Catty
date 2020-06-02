@@ -23,9 +23,20 @@
 @testable import Pocket_Code
 
 final class StoreProjectDownloaderMock: StoreProjectDownloaderProtocol {
+    func download(projectId: String, completion: @escaping (Data?, StoreProjectDownloaderError?) -> Void, progression: ((Float) -> Void)?) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            completion(self.projectData, nil)
+            if let progression = progression {
+                progression(self.progress)
+            }
+        }
+    }
+
+    var progress: Float = 0
     var project: StoreProject?
     var collectionText: StoreProjectCollection.StoreProjectCollectionText?
     var collectionNumber: StoreProjectCollection.StoreProjectCollectionNumber?
+    var projectData: Data?
 
     func fetchSearchQuery(searchTerm: String, completion: @escaping (StoreProjectCollection.StoreProjectCollectionNumber?, StoreProjectDownloaderError?) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -39,7 +50,7 @@ final class StoreProjectDownloaderMock: StoreProjectDownloaderProtocol {
         }
     }
 
-    func fetchProjectDetails(for project: StoreProject, completion: @escaping (StoreProject?, StoreProjectDownloaderError?) -> Void) {
+    func fetchProjectDetails(for projectId: String, completion: @escaping (StoreProject?, StoreProjectDownloaderError?) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             completion(self.project, nil)
         }

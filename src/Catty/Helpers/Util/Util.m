@@ -24,7 +24,6 @@
 #import "ProjectLoadingInfo.h"
 #import "UIImage+CatrobatUIImageExtensions.h"
 #import "CatrobatLanguageDefines.h"
-#import "NSString+CatrobatNSStringExtensions.h"
 #import "Sound.h"
 #import "Look.h"
 #import "Script.h"
@@ -192,6 +191,12 @@
 + (CGFloat)screenWidth
 {
     return [self screenSize:false].width;
+}
+
++ (CGFloat)statusBarHeight
+{
+    CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+    return MIN(statusBarSize.width, statusBarSize.height);
 }
 
 + (CATransition*)getPushCATransition
@@ -560,6 +565,14 @@
     free(properties);
     
     return propertiesDictionary;
+}
+
++ (NSString*)defaultSceneNameForSceneNumber:(NSUInteger)sceneNumber
+{
+    NSString *sceneNumberAsString = [NSString stringWithFormat:@" %@",  @(sceneNumber)];
+    NSString *sceneNameForSceneNumber = [kLocalizedScene stringByAppendingString:sceneNumberAsString];
+    
+    return sceneNameForSceneNumber;
 }
 
 + (BOOL)isEqual:(id)object toObject:(id)objectToCompare

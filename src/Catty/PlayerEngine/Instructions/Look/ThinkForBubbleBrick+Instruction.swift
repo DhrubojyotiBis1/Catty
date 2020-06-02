@@ -32,8 +32,7 @@
         })
     }
 
-    @objc func actionBlock(_ object: SpriteObject, _ formulaInterpreter: FormulaInterpreterProtocol) -> () -> Void {
-        return {
+    @objc func actionBlock(_ object: SpriteObject, _ formulaInterpreter: FormulaInterpreterProtocol) -> () -> Void { {
             var speakText = formulaInterpreter.interpretString(self.stringFormula, for: object)
 
             if Double(speakText) != nil {
@@ -44,9 +43,8 @@
         }
     }
 
-    @objc func removeActionBlock(_ object: SpriteObject) -> () -> Void {
-        return {
-            let oldBubble = object.spriteNode.childNode(withName: kBubbleBrickNodeName)
+    @objc func removeActionBlock(_ object: SpriteObject) -> () -> Void { {
+            let oldBubble = object.spriteNode.childNode(withName: SpriteKitDefines.bubbleBrickNodeName)
 
             if oldBubble != nil {
                 oldBubble!.run(SKAction.removeFromParent())

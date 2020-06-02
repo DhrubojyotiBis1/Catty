@@ -21,7 +21,7 @@
  */
 
 #import "VariablesContainer.h"
-#import "UserVariable.h"
+#import "Pocket_Code-Swift.h"
 #import "OrderedMapTable.h"
 #include "SpriteObject.h"
 #import <pthread.h>
@@ -390,17 +390,6 @@ static pthread_mutex_t variablesLock;
     return vars;
 }
 
-- (NSMutableArray*)allVariablesAndLists
-{
-    NSMutableArray *vars = [self allVariables ];
-    NSMutableArray *lists = [self allLists ];
-    if([vars count] > 0){
-        [vars addObjectsFromArray:lists];
-    }
-    
-    return vars;
-}
-
 - (NSArray*)objectVariablesForObject:(SpriteObject*)spriteObject
 {
     NSMutableArray *vars = [NSMutableArray new];
@@ -423,66 +412,21 @@ static pthread_mutex_t variablesLock;
     return lists;
 }
 
-- (SpriteObject*)spriteObjectForObjectVariable:(UserVariable*)userVariable
+- (BOOL)isProjectVariable: (UserVariable*)userVariable
 {
-    if (!userVariable.isList)
-    {
-        for (NSUInteger index = 0; index < [self.objectVariableList count]; ++index) {
-            SpriteObject *spriteObject = [self.objectVariableList keyAtIndex:index];
-            NSMutableArray *userVariableList = [self.objectVariableList objectAtIndex:index];
-            for (UserVariable *userVariableToCompare in userVariableList) {
-                if (userVariableToCompare == userVariable) {
-                    return spriteObject;
-                }
-            }
-        }
-    }
-    if (userVariable.isList)
-    {
-        for (NSUInteger index = 0; index < [self.objectListOfLists count]; ++index) {
-            SpriteObject *spriteObject = [self.objectListOfLists keyAtIndex:index];
-            NSMutableArray *userListOfLists = [self.objectListOfLists objectAtIndex:index];
-            for (UserVariable *userListToCompare in userListOfLists) {
-                if (userListToCompare == userVariable) {
-                    return spriteObject;
-                }
-            }
-        }
-    }
-    return nil;
-}
-
-- (BOOL)isVariableOfSpriteObject:(SpriteObject*)spriteObject userVariable:(UserVariable*)userVariable
-{
-    for (NSUInteger index = 0; index < [self.objectVariableList count]; ++index) {
-        SpriteObject *spriteObjectToCompare = [self.objectVariableList keyAtIndex:index];
-        if (spriteObjectToCompare != spriteObject) {
-            continue;
-        }
-
-        NSMutableArray *userVariableList = [self.objectVariableList objectAtIndex:index];
-        for (UserVariable *userVariableToCompare in userVariableList) {
-            if ([userVariableToCompare.name isEqualToString:userVariable.name]) {
-                return YES;
-            }
+    for (UserVariable *userVariableToCompare in self.programVariableList) {
+        if ([userVariableToCompare.name isEqualToString:userVariable.name]) {
+            return YES;
         }
     }
     return NO;
 }
 
-- (BOOL)isProjectVariableOrList:(UserVariable*)userVarOrList
+- (BOOL)isProjectList: (id<UserDataProtocol>)userList
 {
-    if (!userVarOrList.isList) {
-        for (UserVariable *userVariableToCompare in self.programVariableList) {
-            if ([userVariableToCompare.name isEqualToString:userVarOrList.name]) {
-                return YES;
-            }
-        }
-    } else {
-        for (UserVariable *userListToCompare in self.programListOfLists) {
-            if ([userListToCompare.name isEqualToString:userVarOrList.name]) {
-                return YES;
-            }
+    for (UserVariable *userListToCompare in self.programListOfLists) {
+        if ([userListToCompare.name isEqualToString:userList.name]) {
+            return YES;
         }
     }
     return NO;
@@ -590,7 +534,7 @@ static pthread_mutex_t variablesLock;
                     }
                 }
                 
-                if ((secondVariable == nil) || (! [firstVariable isEqualToUserVariable:secondVariable]))
+                if ((secondVariable == nil) || (! [firstVariable isEqual:secondVariable]))
                     return NO;
             }
         }
@@ -619,7 +563,7 @@ static pthread_mutex_t variablesLock;
                     break;
                 }
             }
-            if ((secondVariable == nil) || (! [firstVariable isEqualToUserVariable:secondVariable]))
+            if ((secondVariable == nil) || (! [firstVariable isEqual:secondVariable]))
                 return NO;
         }
     }
