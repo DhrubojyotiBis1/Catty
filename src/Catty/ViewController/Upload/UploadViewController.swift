@@ -20,7 +20,7 @@
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class UploadViewController: UIViewController {
+class UploadViewController: UIViewController, UploadCategoryViewControllerDelegate {
     let labelFontSize: CGFloat = 17.0
     let valueFontSize: CGFloat = 17.0
     let horizontalConstrainValue: CGFloat = 25.0
@@ -49,6 +49,7 @@ class UploadViewController: UIViewController {
             view.backgroundColor = UIColor.background
             initProjectNameViewElements()
             initSizeViewElements()
+            initSelectCategoriesElements()
             initDescriptionViewElements()
             initObservers()
             hideKeyboardWhenTapInViewController()
@@ -96,7 +97,7 @@ class UploadViewController: UIViewController {
 
     func initProjectNameViewElements() {
         addLineViewElement(withTopConstraint: 3 * verticalConstrainValue, fromElement: self.view)
-        let programLabel = createLabel(text: kLocalizedName, font: .boldSystemFont(ofSize: labelFontSize))
+        let programLabel = createLabel(text: kLocalizedName, font: .boldSystemFont(ofSize: labelFontSize), addConstraint: true)
         programLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
 
         self.projectNameTextField = UITextField()
@@ -115,7 +116,7 @@ class UploadViewController: UIViewController {
         if let lastLabel = labels.last {
             addLineViewElement(withTopConstraint: verticalConstrainValue, fromElement: lastLabel)
         }
-        let sizeLabel = createLabel(text: kLocalizedSize, font: .boldSystemFont(ofSize: labelFontSize))
+        let sizeLabel = createLabel(text: kLocalizedSize, font: .boldSystemFont(ofSize: labelFontSize), addConstraint: true)
 
         let fileManager = CBFileManager.shared()
         let zipFileData = fileManager?.zip(project)
@@ -125,18 +126,67 @@ class UploadViewController: UIViewController {
             return
         }
         let value = ByteCountFormatter.string(fromByteCount: Int64(data.count), countStyle: .file)
-        let sizeValueLabel = self.createValue(text: value, font: .systemFont(ofSize: valueFontSize))
+        let sizeValueLabel = self.createValue(text: value, font: .systemFont(ofSize: valueFontSize), color: .lightGray)
 
         sizeValueLabel.translatesAutoresizingMaskIntoConstraints = false
         sizeValueLabel.centerYAnchor.constraint(equalTo: sizeLabel.centerYAnchor).isActive = true
         sizeValueLabel.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -horizontalConstrainValue).isActive = true
     }
 
+    func initSelectCategoriesElements() {
+        if let lastLabel = labels.last {
+            addLineViewElement(withTopConstraint: verticalConstrainValue, fromElement: lastLabel)
+        }
+        let selectCategoriesLabel = createLabel(text: kLocalizedSelectCategories, font: .boldSystemFont(ofSize: labelFontSize), addConstraint: false)
+
+        var tags = String()
+        if let existingTags = self.project?.header.tags, !existingTags.isEmpty {
+            tags = existingTags
+        } else {
+            tags = kLocalizedNoCategoriesSelected
+        }
+        let selectCategoriesValueLabel = createValue(text: tags, font: .systemFont(ofSize: valueFontSize - 5), color: .black)
+
+        let selectCatagoryView = UIView()
+        let selectCategoryTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectCategories))
+        selectCatagoryView.addGestureRecognizer(selectCategoryTapGesture)
+        self.view.addSubview(selectCatagoryView)
+
+        selectCatagoryView.translatesAutoresizingMaskIntoConstraints = false
+        if let lastSeperationView = self.separationViews.last {
+            selectCatagoryView.topAnchor.constraint(equalTo: lastSeperationView.bottomAnchor, constant: verticalConstrainValue).isActive = true
+        }
+        selectCatagoryView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: horizontalConstrainValue).isActive = true
+        selectCatagoryView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -horizontalConstrainValue).isActive = true
+
+        selectCategoriesLabel.translatesAutoresizingMaskIntoConstraints = false
+        selectCategoriesLabel.topAnchor.constraint(equalTo: selectCatagoryView.topAnchor, constant: 0).isActive = true
+        selectCategoriesLabel.leftAnchor.constraint(equalTo: selectCatagoryView.leftAnchor, constant: 0).isActive = true
+
+        selectCategoriesValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        selectCategoriesValueLabel.topAnchor.constraint(equalTo: selectCategoriesLabel.bottomAnchor, constant: 1).isActive = true
+        selectCategoriesValueLabel.leftAnchor.constraint(equalTo: selectCatagoryView.leftAnchor, constant: 0).isActive = true
+        selectCategoriesValueLabel.bottomAnchor.constraint(equalTo: selectCatagoryView.bottomAnchor, constant: 0).isActive = true
+
+        var accessoryImageView = UIView()
+        if let  accessoryImage = UIImage(named: "accessory") {
+            accessoryImageView = UIImageView(image: accessoryImage.withRenderingMode(.alwaysTemplate))
+        }
+        accessoryImageView.tintColor = .lightGray
+        self.view.addSubview(accessoryImageView)
+
+        accessoryImageView.translatesAutoresizingMaskIntoConstraints = false
+        accessoryImageView.heightAnchor.constraint(equalToConstant: 14).isActive = true
+        accessoryImageView.widthAnchor.constraint(equalToConstant: 14).isActive = true
+        accessoryImageView.centerYAnchor.constraint(equalTo: selectCatagoryView.centerYAnchor).isActive = true
+        accessoryImageView.trailingAnchor.constraint(equalTo: selectCatagoryView.trailingAnchor).isActive = true
+    }
+
     func initDescriptionViewElements() {
         if let lastLabel = labels.last {
             addLineViewElement(withTopConstraint: verticalConstrainValue, fromElement: lastLabel)
         }
-        let descriptionLabel = createLabel(text: kLocalizedDescription, font: .boldSystemFont(ofSize: labelFontSize))
+        let descriptionLabel = createLabel(text: kLocalizedDescription, font: .boldSystemFont(ofSize: labelFontSize), addConstraint: true)
 
         descriptionTextView = UITextView()
         descriptionTextView.keyboardAppearance = .default
@@ -210,10 +260,10 @@ class UploadViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: barButtonSpinner)
     }
 
-    func createValue(text: String, font: UIFont) -> UILabel {
+    func createValue(text: String, font: UIFont, color: UIColor) -> UILabel {
         let label = UILabel()
         label.text = text
-        label.textColor = UIColor.lightGray
+        label.textColor = color
         label.font = font
         self.view.addSubview(label)
         self.values.append(label)
@@ -221,7 +271,7 @@ class UploadViewController: UIViewController {
         return label
     }
 
-    func createLabel(text: String, font: UIFont) -> UILabel {
+    func createLabel(text: String, font: UIFont, addConstraint: Bool) -> UILabel {
         let label = UILabel()
         label.text = text
         label.textColor = UIColor.globalTint
@@ -229,11 +279,13 @@ class UploadViewController: UIViewController {
         self.view.addSubview(label)
         self.labels.append(label)
 
-        label.translatesAutoresizingMaskIntoConstraints = false
-        if let lastSeperationView = self.separationViews.last {
-         label.topAnchor.constraint(equalTo: lastSeperationView.bottomAnchor, constant: verticalConstrainValue).isActive = true
+        if addConstraint {
+            label.translatesAutoresizingMaskIntoConstraints = false
+            if let lastSeperationView = self.separationViews.last {
+             label.topAnchor.constraint(equalTo: lastSeperationView.bottomAnchor, constant: verticalConstrainValue).isActive = true
+            }
+            label.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: horizontalConstrainValue).isActive = true
         }
-        label.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: horizontalConstrainValue).isActive = true
 
         return label
     }
@@ -247,12 +299,41 @@ class UploadViewController: UIViewController {
         lineView.translatesAutoresizingMaskIntoConstraints = false
         if element == self.view {
             lineView.topAnchor.constraint(equalTo: element.topAnchor, constant: topConstraint).isActive = true
+        } else if values.count == 2, let selectCategoryValueLabel = self.values.last {
+           lineView.topAnchor.constraint(equalTo: selectCategoryValueLabel.bottomAnchor, constant: topConstraint).isActive = true
         } else {
             lineView.topAnchor.constraint(equalTo: element.bottomAnchor, constant: topConstraint).isActive = true
         }
         lineView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
         lineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         lineView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == kSegueToSelectCategories {
+            if let destination = segue.destination as? UploadCategoryViewController {
+                destination.delegate = self
+                destination.tags = project?.header.tags
+            }
+        }
+    }
+
+    func categoriesSelected(tags: [String]) {
+        if let selectedCategoryLabel = self.values.last {
+            var stringRepresentationOfSelectedTags = tags.joined(separator: ", ")
+            if !stringRepresentationOfSelectedTags.isEmpty {
+                selectedCategoryLabel.text = stringRepresentationOfSelectedTags
+            } else {
+                selectedCategoryLabel.text = kLocalizedNoCategoriesSelected
+            }
+            stringRepresentationOfSelectedTags.removeAll { char -> Bool in
+                if char == " " {
+                    return true
+                }
+                return false
+            }
+            project?.header.tags = stringRepresentationOfSelectedTags
+        }
     }
     // MARK: - Actions
 
@@ -273,6 +354,11 @@ class UploadViewController: UIViewController {
         activeRequest = true
     }
 
+    @objc func selectCategories() {
+        projectNameTextField.endEditing(true)
+        descriptionTextView.endEditing(true)
+        performSegue(withIdentifier: kSegueToSelectCategories, sender: self)
+    }
     // MARK: - Upload
 
     @objc func uploadAction() {

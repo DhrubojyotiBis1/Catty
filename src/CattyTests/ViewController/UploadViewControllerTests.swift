@@ -29,6 +29,8 @@ class UploadViewControllerTests: XCTestCase {
 
     var uploadViewController: UploadViewController!
     var uploaderMock: StoreProjectUploaderMock!
+    var delegateMock: UploadCategoryViewControllerDelegateMock!
+    var uploadCategoryViewController: UploadCategoryViewController!
     var project: Project!
 
     override func setUp() {
@@ -38,6 +40,9 @@ class UploadViewControllerTests: XCTestCase {
 
         self.uploaderMock = StoreProjectUploaderMock()
         self.uploadViewController = UploadViewController(uploader: uploaderMock, project: project)
+
+        self.delegateMock = UploadCategoryViewControllerDelegateMock()
+        self.uploadCategoryViewController = UploadCategoryViewController(delegate: delegateMock)
     }
 
     func testUploadAction() {
@@ -47,5 +52,16 @@ class UploadViewControllerTests: XCTestCase {
         uploadViewController.uploadAction()
         XCTAssertEqual(1, uploaderMock.timesUploadMethodCalled)
         XCTAssertEqual(project, uploaderMock.projectToUpload)
+    }
+
+    func testDelegate() {
+        XCTAssertNil(delegateMock.tags)
+
+        uploadCategoryViewController.sendBack(selectedCategories: ["testTag1", "testTag2"])
+
+        XCTAssertNotNil(delegateMock.tags)
+        XCTAssertEqual(delegateMock.tags?.count, 2)
+        XCTAssertEqual(delegateMock.tags?[0], "testTag1")
+        XCTAssertEqual(delegateMock.tags?[1], "testTag2")
     }
 }
