@@ -25,11 +25,13 @@ class UploadViewController: UIViewController, UploadCategoryViewControllerDelega
     let valueFontSize: CGFloat = 17.0
     let horizontalConstrainValue: CGFloat = 25.0
     let verticalConstrainValue: CGFloat = 10.0
+    let hightOfDescriptionTextView: CGFloat = 100
 
     private var uploadBarButton: UIBarButtonItem?
     private var activeRequest: Bool = false
     private var project: Project?
     private var descriptionTextViewBottomConstraint: NSLayoutConstraint!
+    private var firstLineViewTopConstraint: NSLayoutConstraint!
     private var uploader: StoreProjectUploaderProtocol?
     private var projectNameTextFieldRenderingForFirstTime = true
 
@@ -298,7 +300,8 @@ class UploadViewController: UIViewController, UploadCategoryViewControllerDelega
 
         lineView.translatesAutoresizingMaskIntoConstraints = false
         if element == self.view {
-            lineView.topAnchor.constraint(equalTo: element.topAnchor, constant: topConstraint).isActive = true
+            firstLineViewTopConstraint = lineView.topAnchor.constraint(equalTo: element.topAnchor, constant: topConstraint)
+            firstLineViewTopConstraint.isActive = true
         } else if values.count == 2, let selectCategoryValueLabel = self.values.last {
            lineView.topAnchor.constraint(equalTo: selectCategoryValueLabel.bottomAnchor, constant: topConstraint).isActive = true
         } else {
@@ -407,9 +410,12 @@ class UploadViewController: UIViewController, UploadCategoryViewControllerDelega
             let keyboardFrameValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardFrame = keyboardFrameValue.cgRectValue
             UIView.animate(withDuration: 0.5, animations: {
-                let keyboardIsCoveringDescriptionView = self.descriptionTextView.frame.origin.y < (self.view.frame.height - (keyboardFrame.size.height + 20))
-                if keyboardIsCoveringDescriptionView {
+                let keyboardIsCoveringDescriptionView = self.descriptionTextView.frame.origin.y > (self.view.frame.height - (keyboardFrame.size.height + 20))
+                if !keyboardIsCoveringDescriptionView {
                     self.descriptionTextViewBottomConstraint.constant = -keyboardFrame.size.height - 20
+                    if self.descriptionTextView.frame.height < self.hightOfDescriptionTextView {
+                        self.firstLineViewTopConstraint.constant = -self.hightOfDescriptionTextView
+                    }
                 }
                 self.view.layoutIfNeeded()
             })
@@ -419,6 +425,7 @@ class UploadViewController: UIViewController, UploadCategoryViewControllerDelega
     @objc func keyboardWillHide(notification: Notification) {
         UIView.animate(withDuration: 0.5) {
             self.descriptionTextViewBottomConstraint.constant = -20
+            self.firstLineViewTopConstraint.constant = 3 * self.verticalConstrainValue
             self.view.layoutIfNeeded()
         }
     }
